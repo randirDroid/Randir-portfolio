@@ -1,0 +1,1831 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Randir</title>
+    <script src="./support.js"></script>
+    
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin=""
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lalezar&amp;family=Vazirmatn:wght@400;500;700;800;900&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          * {
+            box-sizing: border-box;
+          }
+          html,
+          body {
+            margin: 0;
+            scroll-behavior: smooth;
+          }
+          ::selection {
+            background: var(--ink, #111);
+            color: var(--paper, #fff);
+          }
+          @keyframes marq {
+            from {
+              transform: translateX(0);
+            }
+            to {
+              transform: translateX(-50%);
+            }
+          }
+          @keyframes statusPulse {
+            0% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--available-status-color, #16c46a) 60%, transparent);
+            }
+            70% {
+              box-shadow: 0 0 0 9px
+                color-mix(in srgb, var(--available-status-color, #16c46a) 0%, transparent);
+            }
+            100% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--available-status-color, #16c46a) 0%, transparent);
+            }
+          };
+          @keyframes statusPulse {
+            0% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--busy-status-color, #ffb020) 60%, transparent);
+            }
+            70% {
+              box-shadow: 0 0 0 9px
+                color-mix(in srgb, var(--busy-status-color, #ffb020) 0%, transparent);
+            }
+            100% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--busy-status-color, #ffb020) 0%, transparent);
+            }
+          };
+          @keyframes statusPulse {
+            0% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--do-not-disturb-status-color, #e5484d) 60%, transparent);
+            }
+            70% {
+              box-shadow: 0 0 0 9px
+                color-mix(in srgb, var(--do-not-disturb-status-color, #e5484d) 0%, transparent);
+            }
+            100% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--do-not-disturb-status-color, #e5484d) 0%, transparent);
+            }
+          };
+          @keyframes statusPulse {
+            0% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--offline-status-color, #8b8b8b) 60%, transparent);
+            }
+            70% {
+              box-shadow: 0 0 0 9px
+                color-mix(in srgb, var(--offline-status-color, #8b8b8b) 0%, transparent);
+            }
+            100% {
+              box-shadow: 0 0 0 0
+                color-mix(in srgb, var(--offline-status-color, #8b8b8b) 0%, transparent);
+            }
+          };
+          
+          @media (max-width: 880px) {
+            .grid2 {
+              grid-template-columns: 1fr !important;
+            }
+            .grid2b {
+              grid-template-columns: 1fr !important;
+            }
+            .grid4 {
+              grid-template-columns: 1fr 1fr !important;
+            }
+            .navlinks {
+              display: none !important;
+            }
+            .hero-photo {
+              order: -1;
+            }
+          }
+          @media (max-width: 560px) {
+            .grid4 {
+              grid-template-columns: 1fr !important;
+            }
+          }
+        </style>
+      </helmet>
+      <div
+        dir="rtl"
+        ref="{{ setRoot }}"
+        style="
+          --accent: #52cc5d;
+          --shadow: 7px;
+          --paper: #f5efe0;
+          --ink: #111;
+          --card: #fff;
+          --muted: #5a5a5a;
+          min-height: 100vh;
+          background-color: var(--paper);
+          background-image:
+            linear-gradient(#0000000d 1px, transparent 1px),
+            linear-gradient(90deg, #0000000d 1px, transparent 1px);
+          background-size: 34px 34px;
+          color: var(--ink, #111);
+          font-family: &quot;Vazirmatn&quot;, sans-serif;
+        "
+      >
+        <!-- NAV -->
+        <header
+          style="
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--paper);
+            border-bottom: 4px solid var(--ink, #111);
+          "
+        >
+          <div
+            style="
+              max-width: 1180px;
+              margin: 0 auto;
+              padding: 14px 22px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 16px;
+            "
+          >
+            <span
+              style="
+                font-family: &quot;Lalezar&quot;, cursive;
+                font-size: 28px;
+                line-height: 1;
+                background: var(--accent);
+                border: 3px solid var(--ink, #111);
+                box-shadow: 4px 4px 0 var(--ink, #111);
+                padding: 5px 16px 1px;
+              "
+              >Randir</span
+            >
+            <div style="display: flex; align-items: center; gap: 8px">
+              <!-- buttons for fark / light theme and diff color -->
+              <!-- <button
+                onClick="{{ toggleDark }}"
+                aria-label="حالت روشن یا تاریک"
+                style="
+                  width: 44px;
+                  height: 44px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--card, #fff);
+                  color: var(--ink, #111);
+                  font-size: 20px;
+                  line-height: 1;
+                  cursor: pointer;
+                  transition: transform 0.1s ease;
+                "
+                style-hover="transform:translate(2px,2px);"
+              >
+                {{ darkIcon }}</button>
+              <button
+                onClick="{{ cycleAccent }}"
+                aria-label="تغییر رنگ"
+                style="
+                  width: 44px;
+                  height: 44px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--accent, #ffd02e);
+                  color: var(--ink, #111);
+                  font-size: 18px;
+                  line-height: 1;
+                  cursor: pointer;
+                  transition: transform 0.1s ease;
+                "
+                style-hover="transform:translate(2px,2px);"
+              >
+                ✦
+              </button> -->
+              <nav class="navlinks" style="display: flex; gap: 8px">
+                <a
+                  href="#about"
+                  style="
+                    padding: 9px 16px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--card, #fff);
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    font-weight: 800;
+                    font-size: 15px;
+                    transition: all 0.12s ease;
+                  "
+                  style-hover="background:var(--accent);transform:translate(2px,2px);"
+                  >درباره من</a
+                >
+                <a
+                  href="#skills"
+                  style="
+                    padding: 9px 16px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--card, #fff);
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    font-weight: 800;
+                    font-size: 15px;
+                    transition: all 0.12s ease;
+                  "
+                  style-hover="background:var(--accent);transform:translate(2px,2px);"
+                  >توانایی‌ها</a
+                >
+                <a
+                  href="#projects"
+                  style="
+                    padding: 9px 16px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--card, #fff);
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    font-weight: 800;
+                    font-size: 15px;
+                    transition: all 0.12s ease;
+                  "
+                  style-hover="background:var(--accent);transform:translate(2px,2px);"
+                  >پروژه‌ها</a
+                >
+                <a
+                  href="#contact"
+                  style="
+                    padding: 9px 16px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--ink, #111);
+                    color: var(--paper, #fff);
+                    text-decoration: none;
+                    font-weight: 800;
+                    font-size: 15px;
+                    transition: all 0.12s ease;
+                  "
+                  style-hover="transform:translate(2px,2px);"
+                  >ارتباط</a
+                >
+              </nav>
+            </div>
+          </div>
+        </header>
+
+        <!-- HERO -->
+        <section
+          data-screen-label="Hero"
+          style="max-width: 1180px; margin: 0 auto; padding: 56px 22px 40px"
+        >
+          <div
+            class="grid2"
+            style="
+              display: grid;
+              grid-template-columns: 1.15fr 0.85fr;
+              gap: 40px;
+              align-items: center;
+            "
+          >
+            <div>
+              <span
+                dir="ltr"
+                style="
+                  display: inline-block;
+                  font-weight: 700;
+                  font-size: 13px;
+                  background: var(--ink, #111);
+                  color: var(--paper, #fff);
+                  padding: 6px 12px;
+                  letter-spacing: 0.05em;
+                "
+                >توسعه دهنده فرانت اند</span
+              >
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 22px;
+                  margin: 20px 0 0;
+                "
+              >
+                <img
+                  src="../pic/profile.jpg"
+                  alt="محمد صولت"
+                  style="
+                    width: 104px;
+                    height: 104px;
+                    flex-shrink: 0;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 4px solid var(--ink, #111);
+                    box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                    var(--ink, #111);
+                  "
+                />
+                <h1
+                  style="
+                    font-family: &quot;Lalezar&quot;, cursive;
+                    font-weight: 400;
+                    font-size: clamp(54px, 9vw, 104px);
+                    line-height: 1.04;
+                    margin: 0;
+                  "
+                >
+                  محمد صولت
+                </h1>
+              </div>
+              <div
+                style="
+                  margin: 14px 0 0;
+                  display: inline-block;
+                  font-family: &quot;Lalezar&quot;, cursive;
+                  font-size: clamp(10px, 5vw, 20px);
+                  line-height: 1;
+                  background: var(--accent);
+                  border: 4px solid var(--ink, #111);
+                  box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                    var(--ink, #111);
+                  padding: 8px 22px 2px;
+                  transform: rotate(-2deg);
+                "
+              >
+                «Randir»
+              </div>
+              <p
+                style="
+                  font-size: 19px;
+                  line-height: 1.9;
+                  font-weight: 500;
+                  margin: 30px 0 0;
+                  max-width: 46ch;
+                "
+              >
+       سلام! یک توسعه دهنده فرانت اند هستم که تازه مسیرم رو شروع کردم، عاشق ساختن رابط کاربری هایی هستم که تمیز و سریع هستند 
+       و کاربر همون اوئل می فهمه کاربرئ سایت برای چیه.
+              </p>
+              <div
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                  margin-top: 34px;
+                "
+              >
+                <a
+                  href="#projects"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 15px 26px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--accent);
+                    box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                      var(--ink, #111);
+                    font-weight: 800;
+                    font-size: 17px;
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    transition:
+                      transform 0.1s ease,
+                      box-shadow 0.1s ease;
+                  "
+                  style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                  >پروژه‌های من ↙</a
+                >
+                <a
+                  href="#contact"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 15px 26px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--card, #fff);
+                    box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                      var(--ink, #111);
+                    font-weight: 800;
+                    font-size: 17px;
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    transition:
+                      transform 0.1s ease,
+                      box-shadow 0.1s ease;
+                  "
+                  style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                  >ارتباط با من</a
+                >
+              </div>
+            </div>
+
+            <div class="hero-photo" style="position: relative">
+              <div
+                style="
+                  border: 4px solid var(--ink, #111);
+                  box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                    var(--ink, #111);
+                  background: var(--ink, #111);
+                  overflow: hidden;
+                "
+              >
+                <div
+                  style="
+                    background: var(--accent);
+                    color: var(--ink, #111);
+                    padding: 12px 18px;
+                    font-family: &quot;Lalezar&quot;, cursive;
+                    font-size: 22px;
+                    line-height: 1.5;
+                    border-bottom: 4px solid var(--ink, #111);
+                  "
+                >
+                  یه نگاه سریع ✦
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 4px;
+                    background: var(--ink, #111);
+                  "
+                >
+                  <div
+                    style="
+                      background: var(--card, #fff);
+                      padding: 26px 12px;
+                      text-align: center;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: &quot;Lalezar&quot;, cursive;
+                        font-size: 48px;
+                        line-height: 1;
+                      "
+                    >
+                      +۲
+                    </div>
+                    <div
+                      style="
+                        font-weight: 700;
+                        font-size: 14px;
+                        color: var(--muted, #5a5a5a);
+                        margin-top: 8px;
+                      "
+                    >
+                      پروژه
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      background: var(--card, #fff);
+                      padding: 26px 12px;
+                      text-align: center;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: &quot;Lalezar&quot;, cursive;
+                        font-size: 48px;
+                        line-height: 1;
+                      "
+                    >
+                      +۴
+                    </div>
+                    <div
+                      style="
+                        font-weight: 700;
+                        font-size: 14px;
+                        color: var(--muted, #5a5a5a);
+                        margin-top: 8px;
+                      "
+                    >
+                      تکنولوژی
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      background: var(--card, #fff);
+                      padding: 26px 12px;
+                      text-align: center;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: &quot;Lalezar&quot;, cursive;
+                        font-size: 48px;
+                        line-height: 1;
+                      "
+                    >
+                      ۱
+                    </div>
+                    <div
+                      style="
+                        font-weight: 700;
+                        font-size: 14px;
+                        color: var(--muted, #5a5a5a);
+                        margin-top: 8px;
+                      "
+                    >
+                      سال تجربه
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      background: var(--card, #fff);
+                      padding: 26px 12px;
+                      text-align: center;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: &quot;Lalezar&quot;, cursive;
+                        font-size: 48px;
+                        line-height: 1;
+                      "
+                    >
+                      ۱۰۰٪
+                    </div>
+                    <div
+                      style="
+                        font-weight: 700;
+                        font-size: 14px;
+                        color: var(--muted, #5a5a5a);
+                        margin-top: 8px;
+                      "
+                    >
+                      تحویل به‌موقع
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <span
+                style="
+                  position: absolute;
+                  top: -30px;
+                  right: -16px;
+                  font-weight: 800;
+                  font-size: 15px;
+                  background: #ff7bac;
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 3px 3px 0 var(--ink, #111);
+                  padding: 7px 14px;
+                  transform: rotate(6deg);
+                "
+                ><span
+                  style="
+                    --available-status-color: #16c46a;
+                    --busy-status-color: #ffb020;
+                    --do-not-disturb-status-color: #e5484d;
+                    --offline-status-color: #8b8b8b;
+                    position: absolute;
+                    left: -25px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 13px;
+                    height: 13px;
+                    border-radius: 50%;
+                    background: var(--available-status-color);
+                    border: 3px solid var(--ink, #111);
+                    animation: statusPulse 1.8s ease-out infinite;">
+                    <!-- وضعیت ها -->
+                    </span>در دسترس</span>
+                    <!-- </span>مشغول</span>
+                    </span>غیر قابل دسترس</span>
+                    </span>آفلاین</span> -->
+              <span
+                style="
+                  position: absolute;
+                  bottom: -18px;
+                  left: -14px;
+                  font-weight: 800;
+                  font-size: 15px;
+                  background: #F54927;
+                  color: #fff;
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 3px 3px 0 var(--ink, #111);
+                  padding: 3px 10px;
+                  transform: rotate(-5deg);
+                "
+                ><img src="../pic/icons8-clover-50.png" alt=""></span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- MARQUEE -->
+        <div
+          style="
+            border-top: 4px solid var(--ink, #111);
+            border-bottom: 4px solid var(--ink, #111);
+            background: var(--accent);
+            overflow: hidden;
+          "
+        >
+          <div
+            dir="ltr"
+            style="
+              display: flex;
+              width: max-content;
+              white-space: nowrap;
+              animation: marq 20s linear infinite;
+              font-family: &quot;Space Mono&quot;, monospace;
+              font-weight: 700;
+              font-size: 26px;
+              padding: 10px 0;
+            "
+          >
+            <span style="padding-inline: 18px"
+              >HTML ◆ CSS ◆ JAVASCRIPT ◆ TAILWIND ◆ REACT ◆ GIT ◆
+              RESPONSIVE&nbsp;UI ◆&nbsp;</span
+            >
+            <span style="padding-inline: 18px"
+              >HTML ◆ CSS ◆ JAVASCRIPT ◆ TAILWIND ◆ REACT ◆ GIT ◆
+              RESPONSIVE&nbsp;UI ◆&nbsp;</span
+            >
+          </div>
+        </div>
+
+        <!-- ABOUT -->
+        <section
+          id="about"
+          data-screen-label="About"
+          style="
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 70px 22px;
+            scroll-margin-top: 80px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 18px;
+              margin-bottom: 34px;
+            "
+          >
+            <span
+              style="
+                font-family: &quot;Lalezar&quot;, cursive;
+                font-size: 30px;
+                line-height: 1;
+                background: #ff7bac;
+                border: 3px solid var(--ink, #111);
+                box-shadow: 4px 4px 0 var(--ink, #111);
+                padding: 6px 16px 1px;
+              "
+              >۰۱</span
+            >
+            <h2
+              style="
+                font-weight: 900;
+                font-size: clamp(32px, 5vw, 46px);
+                margin: 0;
+              "
+            >
+              درباره من
+            </h2>
+          </div>
+          <div
+            class="grid2b"
+            style="
+              display: grid;
+              grid-template-columns: 1.3fr 1fr;
+              gap: 24px;
+              align-items: start;
+            "
+          >
+            <div
+              style="
+                background: var(--card, #fff);
+                border: 4px solid var(--ink, #111);
+                box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                  var(--ink, #111);
+                padding: 32px;
+              "
+            >
+              <p
+                style="
+                  font-size: 20px;
+                  line-height: 2;
+                  font-weight: 600;
+                  margin: 0 0 16px;
+                "
+              >
+                من محمد هستم.
+              </p>
+              <p
+                style="
+                  font-size: 17px;
+                  line-height: 2;
+                  margin: 0;
+                  color: var(--ink, var(--ink, #111));
+                "
+              >
+                برنامه‌نویسی را با کنجکاوی شروع کردم و حالا تمام تمرکزم روی
+                فرانت‌اند است. برایم مهم است که هر پروژه نه‌فقط «کار کند»، بلکه
+                تمیز، سریع و با توجه به جزئیات ساخته شود. هر روز یک چیز تازه یاد
+                می‌گیرم.
+              </p>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px;
+                align-content: start;
+              "
+            >
+              <span
+                style="
+                  font-weight: 800;
+                  font-size: 16px;
+                  background: #c2f24a;
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 4px 4px 0 var(--ink, #111);
+                  padding: 12px 18px;
+                "
+                >متعهد</span
+              >
+              <span
+                style="
+                  font-weight: 800;
+                  font-size: 16px;
+                  background: #5b8cff;
+                  color: #fff;
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 4px 4px 0 var(--ink, #111);
+                  padding: 12px 18px;
+                "
+                >خلاق</span
+              >
+              <span
+                style="
+                  font-weight: 800;
+                  font-size: 16px;
+                  background: #ff7a3c;
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 4px 4px 0 var(--ink, #111);
+                  padding: 12px 18px;
+                "
+                >جزئی‌نگر</span
+              >
+              <span
+                style="
+                  font-weight: 800;
+                  font-size: 16px;
+                  background: var(--card, #fff);
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 4px 4px 0 var(--ink, #111);
+                  padding: 12px 18px;
+                "
+                >حل‌کننده مسئله</span
+              >
+              <span
+                style="
+                  font-weight: 800;
+                  font-size: 16px;
+                  background: var(--card);
+                  background: #ff7bac;
+                  border: 3px solid var(--ink, #111);
+                  box-shadow: 4px 4px 0 var(--ink, #111);
+                  padding: 12px 18px;
+                "
+                >عاشق یادگیری</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- SKILLS / CAPABILITIES -->
+        <section
+          id="skills"
+          data-screen-label="Capabilities"
+          style="
+            background: var(--ink, #111);
+            border-top: 4px solid var(--ink, #111);
+            border-bottom: 4px solid var(--ink, #111);
+          "
+        >
+          <div style="max-width: 1180px; margin: 0 auto; padding: 70px 22px">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                margin-bottom: 36px;
+              "
+            >
+              <span
+                style="
+                  font-family: &quot;Lalezar&quot;, cursive;
+                  font-size: 30px;
+                  line-height: 1;
+                  background: #5b8cff;
+                  color: #fff;
+                  border: 3px solid var(--paper, #fff);
+                  box-shadow: 4px 4px 0 var(--paper, #fff);
+                  padding: 6px 16px 1px;
+                "
+                >۰۲</span
+              >
+              <h2
+                style="
+                  font-weight: 900;
+                  font-size: clamp(32px, 5vw, 46px);
+                  margin: 0;
+                  color: var(--paper, #fff);
+                "
+              >
+                توانایی‌ها
+              </h2>
+            </div>
+            <div
+              class="grid4"
+              style="
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+              "
+            >
+              <div
+                style="
+                  background: var(--card, #fff);
+                  border: 4px solid var(--paper, #fff);
+                  box-shadow: 6px 6px 0 var(--accent, #ffd02e);
+                  padding: 24px;
+                "
+              >
+                <span
+                  style="
+                    display: inline-block;
+                    font-family: &quot;Lalezar&quot;, cursive;
+                    font-size: 22px;
+                    background: var(--accent);
+                    border: 3px solid var(--ink, #111);
+                    padding: 3px 12px 0;
+                    margin-bottom: 16px;
+                  "
+                  >۰۱</span
+                >
+                <h3 style="font-weight: 900; font-size: 20px; margin: 0 0 8px">
+                  رابط واکنش‌گرا
+                </h3>
+                <p
+                  style="
+                    font-size: 15px;
+                    line-height: 1.8;
+                    color: var(--ink, var(--ink, #111));
+                    margin: 0;
+                  "
+                >
+                  صفحاتی که روی موبایل و دسکتاپ یکسان عالی به‌نظر می‌رسند.
+                </p>
+              </div>
+              <div
+                style="
+                  background: var(--card, #fff);
+                  border: 4px solid var(--paper, #fff);
+                  box-shadow: 6px 6px 0 #ff7bac;
+                  padding: 24px;
+                "
+              >
+                <span
+                  style="
+                    display: inline-block;
+                    font-family: &quot;Lalezar&quot;, cursive;
+                    font-size: 22px;
+                    background: #ff7bac;
+                    border: 3px solid var(--ink, #111);
+                    padding: 3px 12px 0;
+                    margin-bottom: 16px;
+                  "
+                  >۰۲</span
+                >
+                <h3 style="font-weight: 900; font-size: 20px; margin: 0 0 8px">
+                کد خوانا
+                </h3>
+                <p
+                  style="
+                    font-size: 15px;
+                    line-height: 1.8;
+                    color: var(--ink, var(--ink, #111));
+                    margin: 0;
+                  "
+                >
+                  HTML ساخت‌یافته، خوانا و قابل‌نگه‌داری برای آینده.
+                </p>
+              </div>
+              <div
+                style="
+                  background: var(--card, #fff);
+                  border: 4px solid var(--paper, #fff);
+                  box-shadow: 6px 6px 0 #ff7a3c;
+                  padding: 24px;
+                "
+              >
+                <span
+                  style="
+                    display: inline-block;
+                    font-family: &quot;Lalezar&quot;, cursive;
+                    font-size: 22px;
+                    background: #ff7a3c;
+                    border: 3px solid var(--ink, #111);
+                    padding: 3px 12px 0;
+                    margin-bottom: 16px;
+                  "
+                  >۰۳</span
+                >
+                <h3 style="font-weight: 900; font-size: 20px; margin: 0 0 8px">
+                 استایل منظم
+                </h3>
+                <p
+                  style="
+                    font-size: 15px;
+                    line-height: 1.8;
+                    color: var(--ink, var(--ink, #111));
+                    margin: 0;
+                  "
+                >
+                  طراحی با CSS و Tailwind، پیکسل‌به‌پیکسل و منظم.
+                </p>
+              </div>
+              <div
+                style="
+                  background: var(--card, #fff);
+                  border: 4px solid var(--paper, #fff);
+                  box-shadow: 6px 6px 0 #5b8cff;
+                  padding: 24px;
+                "
+              >
+                <span
+                  style="
+                    display: inline-block;
+                    font-family: &quot;Lalezar&quot;, cursive;
+                    font-size: 22px;
+                    background: #5b8cff;
+                    color: #fff;
+                    border: 3px solid var(--ink, #111);
+                    padding: 3px 12px 0;
+                    margin-bottom: 16px;
+                  "
+                  >۰۴</span
+                >
+                <h3 style="font-weight: 900; font-size: 20px; margin: 0 0 8px">
+                  تعامل با جاوااسکریپت
+                </h3>
+                <p
+                  style="
+                    font-size: 15px;
+                    line-height: 1.8;
+                    color: var(--ink, var(--ink, #111));
+                    margin: 0;
+                  "
+                >
+                  افزودن رفتار، تعامل و موشن به رابط کاربری.
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 30px;
+                align-items: center;
+              "
+            >
+              <span
+                style="
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-weight: 700;
+                  font-size: 13px;
+                  color: var(--paper, #fff);
+                "
+                >// تکنولوژی ها →</span
+              >
+              <span
+                dir="ltr"
+                style="
+                  font-weight: 700;
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  background: #F54927;
+                  border: 3px solid var(--paper, #fff);
+                  padding: 8px 14px;
+                "
+                >HTML</span
+              >
+              <span
+                dir="ltr"
+                style="
+                  font-weight: 700;
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  background: #1976D2;
+                  border: 3px solid var(--paper, #fff);
+                  padding: 8px 14px;
+                "
+                >CSS</span
+              >
+              <span
+                dir="ltr"
+                style="
+                  font-weight: 700;
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  background: #FFD600;
+                  border: 3px solid var(--paper, #fff);
+                  padding: 8px 14px;
+                "
+                >JavaScript</span
+              >
+              <span
+                dir="ltr"
+                style="
+                  font-weight: 700;
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  background: #00ACC1;
+                  border: 3px solid var(--paper, #fff);
+                  padding: 8px 14px;
+                "
+                >Tailwind</span
+              >
+              <span
+                dir="ltr"
+                style="
+                  font-weight: 700;
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  background: var(--card, #fff);
+                  border: 3px dashed var(--paper, #fff);
+                  color: var(--ink, #111);
+                  padding: 8px 14px;
+                "
+                >React*</span
+              >
+              <span
+                dir="ltr"
+                style="
+                  font-weight: 700;
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  background: var(--card, #fff);
+                  border: 3px dashed var(--paper, #fff);
+                  color: var(--ink, #111);
+                  padding: 8px 14px;
+                "
+                >Git*</span
+              >
+              <span
+                style="
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 12px;
+                  color: #888;
+                "
+                >* در حال یادگیری</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section
+          id="projects"
+          data-screen-label="Projects"
+          style="
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 70px 22px;
+            scroll-margin-top: 80px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 18px;
+              margin-bottom: 36px;
+            "
+          >
+            <span
+              style="
+                font-family: &quot;Lalezar&quot;, cursive;
+                font-size: 30px;
+                line-height: 1;
+                background: #ff7a3c;
+                border: 3px solid var(--ink, #111);
+                box-shadow: 4px 4px 0 var(--ink, #111);
+                padding: 6px 16px 1px;
+              "
+              >۰۳</span
+            >
+            <h2
+              style="
+                font-weight: 900;
+                font-size: clamp(32px, 5vw, 46px);
+                margin: 0;
+              "
+            >
+              پروژه‌ها
+            </h2>
+          </div>
+
+          <div
+            class="grid2"
+            style="
+              display: grid;
+              grid-template-columns: 0.95fr 1.05fr;
+              gap: 0;
+              border: 4px solid var(--ink, #111);
+              box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                var(--ink, #111);
+              background: var(--card, #fff);
+              margin-bottom: 24px;
+            "
+          >
+            <div
+              style="
+                min-height: 300px;
+                border-left: 4px solid var(--ink, #111);
+                overflow: hidden;
+                display: flex;">
+                <a href="https://eventeman.ir">
+                  <img
+                src="../pic/eventeman.jpg"
+                alt="Eventeman preview"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  display: block;
+                  background: var(--accent);"/>
+                </a>
+            </div>
+            <div style="padding: 34px; display: flex; flex-direction: column">
+              <span
+                style="
+                  align-self: flex-start;
+                  font-weight: 800;
+                  font-size: 13px;
+                  background: var(--accent);
+                  border: 3px solid var(--ink, #111);
+                  padding: 5px 12px;
+                  margin-bottom: 14px;
+                "
+                >پروژهٔ شاخص</span
+              >
+              <h3
+                style="
+                  font-family: &quot;Lalezar&quot;, cursive;
+                  font-weight: 400;
+                  font-size: 42px;
+                  line-height: 1;
+                  margin: 0 0 12px;
+                "
+              >
+                ایونت من
+              </h3>
+              <p
+                style="
+                  font-size: 17px;
+                  line-height: 1.9;
+                  margin: 0 0 20px;
+                  color: var(--ink, var(--ink, #111));
+                "
+              >
+                 برای برنامه ریزی و اجرای انواع مراسم ها -
+                 پ از بادکنک آرایی و گل آرایی تا تهیه فینگر فود و دی جی برای مراسمات شما.
+              </p>
+              <div
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-bottom: 26px;
+                "
+              >
+                <span
+                  dir="ltr"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-weight: 700;
+                    font-size: 12px;
+                    background: #F54927;
+                    border: 2px solid var(--ink, #111);
+                    padding: 5px 10px;
+                  "
+                  >HTML</span
+                >
+                <span
+                  dir="ltr"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-weight: 700;
+                    font-size: 12px;
+                    background: #0277BD;
+                    border: 2px solid var(--ink, #111);
+                    padding: 5px 10px;
+                  "
+                  >CSS</span
+                >
+                <span
+                  dir="ltr"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-weight: 700;
+                    font-size: 12px;
+                    background: #FFD600;
+                    border: 2px solid var(--ink, #111);
+                    padding: 5px 10px;
+                  "
+                  >JavaScript</span
+                >
+                <span
+                  dir="ltr"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-weight: 700;
+                    font-size: 12px;
+                    background: #0277BD;
+                    border: 2px solid var(--ink, #111);
+                    padding: 5px 10px;
+                  "
+                  >python</span
+                >
+              </div>
+              <div style="display: flex; gap: 14px; margin-top: auto">
+                <a
+                  href="https://eventeman.ir"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 13px 24px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--accent);
+                    box-shadow: 5px 5px 0 var(--ink, #111);
+                    font-weight: 800;
+                    font-size: 16px;
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    transition:
+                      transform 0.1s ease,
+                      box-shadow 0.1s ease;
+                  "
+                  style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                  >مشاهده ↙</a
+                >
+                <!-- <a
+                  href="#"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 13px 24px;
+                    border: 3px solid var(--ink, #111);
+                    background: var(--card, #fff);
+                    box-shadow: 5px 5px 0 var(--ink, #111);
+                    font-weight: 800;
+                    font-size: 16px;
+                    color: var(--ink, #111);
+                    text-decoration: none;
+                    transition:
+                    transform 0.1s ease,
+                    box-shadow 0.1s ease;"style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);">کد
+                </a> -->
+
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="grid2"
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px"
+          >
+            <div
+              style="
+                border: 4px dashed var(--ink, #111);
+                padding: 40px;
+                text-align: center;
+                background: var(--card, #fff);
+              "
+            >
+              <span
+                dir="ltr"
+                style="
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  color: var(--muted, #5a5a5a);
+                "
+                >$ loading next_project...</span
+              >
+              <p style="font-weight: 800; font-size: 19px; margin: 14px 0 0">
+                به زودی...
+              </p>
+            </div>
+            <div
+              style="
+                border: 4px dashed var(--ink, #111);
+                padding: 40px;
+                text-align: center;
+                background: var(--card, #fff);
+              "
+            >
+              <span
+                dir="ltr"
+                style="
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 14px;
+                  color: var(--muted, #5a5a5a);
+                "
+                >$ git init my_idea</span
+              >
+              <p style="font-weight: 800; font-size: 19px; margin: 14px 0 0">
+               در حال ساخت  
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section
+          id="contact"
+          data-screen-label="Contact"
+          style="
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 10px 22px 80px;
+            scroll-margin-top: 80px;
+          "
+        >
+          <div
+            style="
+              background: var(--accent);
+              border: 4px solid var(--ink, #111);
+              box-shadow: var(--shadow, 7px) var(--shadow, 7px) 0
+                var(--ink, #111);
+              padding: 44px 38px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                margin-bottom: 14px;
+              "
+            >
+              <span
+                style="
+                  font-family: &quot;Lalezar&quot;, cursive;
+                  font-size: 30px;
+                  line-height: 1;
+                  background: var(--ink, #111);
+                  color: var(--paper, #fff);
+                  border: 3px solid var(--ink, #111);
+                  padding: 6px 16px 1px;
+                "
+                >۰۴</span
+              >
+              <h2
+                style="
+                  font-weight: 900;
+                  font-size: clamp(32px, 5vw, 46px);
+                  margin: 0;
+                "
+              >
+                همکاری با من
+              </h2>
+            </div>
+            <p
+              style="
+                font-size: 18px;
+                line-height: 1.9;
+                font-weight: 600;
+                margin: 0 0 28px;
+                max-width: 50ch;
+              "
+            >
+              برای همکاری، پروژه یا فقط یک گفت‌وگوی دوستانه یکی از این راه ها رو
+              انتخاب کن
+            </p>
+            <div
+              class="grid4"
+              style="
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+              "
+            >
+              <a
+                href="https://t.me/Mohamadsolat"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  padding: 18px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--card, #fff);
+                  box-shadow: 5px 5px 0 var(--ink, #111);
+                  text-decoration: none;
+                  color: var(--ink, #111);
+                  transition:
+                    transform 0.1s ease,
+                    box-shadow 0.1s ease;
+                "
+                style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                ><span
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 900;
+                    font-size: 18px;
+                  "
+                  ><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" style="flex-shrink: 0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>تلگرام</span
+                ><span
+                  dir="ltr"
+                  onclick="event.preventDefault();event.stopPropagation();copyContact(this,'@Mohamadsolat')"
+                  title="کپی کن"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-size: 13px;
+                    color: var(--muted, #5a5a5a);
+                    text-align: right;
+                    cursor: pointer;
+                  "
+                  >@randir</span
+                ></a
+              >
+              <a
+                href="https://github.com/randirDroid"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  padding: 18px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--card, #fff);
+                  box-shadow: 5px 5px 0 var(--ink, #111);
+                  text-decoration: none;
+                  color: var(--ink, #111);
+                  transition:
+                    transform 0.1s ease,
+                    box-shadow 0.1s ease;
+                "
+                style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                ><span
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 900;
+                    font-size: 18px;
+                  "
+                  ><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" style="flex-shrink: 0"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.94c.58.1.79-.25.79-.56 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.16 0 1.56-.02 2.82-.02 3.2 0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>گیت‌هاب</span
+                ><span
+                  dir="ltr"
+                  onclick="event.preventDefault();event.stopPropagation();copyContact(this,'github.com/RandirDroid')"
+                  title="کپی کن"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-size: 13px;
+                    color: var(--muted, #5a5a5a);
+                    text-align: right;
+                    cursor: pointer;
+                  "
+                  >github.com/RandirDroid</span
+                ></a
+              >
+              <a
+                href="mailto:mohamadsolatrndr@gmail.com"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  padding: 18px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--card, #fff);
+                  box-shadow: 5px 5px 0 var(--ink, #111);
+                  text-decoration: none;
+                  color: var(--ink, #111);
+                  transition:
+                    transform 0.1s ease,
+                    box-shadow 0.1s ease;
+                "
+                style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                ><span
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 900;
+                    font-size: 18px;
+                  "
+                  ><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" style="flex-shrink: 0"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>ایمیل</span
+                ><span
+                  dir="ltr"
+                  onclick="event.preventDefault();event.stopPropagation();copyContact(this,'mohamadsolatrndr@gmail.com')"
+                  title="کپی کن"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-size: 13px;
+                    color: var(--muted, #5a5a5a);
+                    text-align: right;
+                    cursor: pointer;
+                  "
+                  ><span
+                    class="__cf_email__"
+                    data-cfemail="630e0c0b020e0207100c0f0217110d071123040e020a0f4d000c0e"
+                    >[mohamadhajisolat@gmail.com]</span
+                  ></span
+                ></a
+              >
+              <!-- <a
+                href="#"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  padding: 18px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--card, #fff);
+                  box-shadow: 5px 5px 0 var(--ink, #111);
+                  text-decoration: none;
+                  color: var(--ink, #111);
+                  transition:
+                    transform 0.1s ease,
+                    box-shadow 0.1s ease;
+                "
+                style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                ><span style="font-weight: 900; font-size: 18px">لینکدین</span
+                ><span
+                  dir="ltr"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-size: 13px;
+                    color: var(--muted, #5a5a5a);
+                    text-align: right;
+                  "
+                  >in/randir</span
+                ></a
+              > -->
+              <a
+                href="https://wa.me/989333984150"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  padding: 18px;
+                  border: 3px solid var(--ink, #111);
+                  background: var(--card, #fff);
+                  box-shadow: 5px 5px 0 var(--ink, #111);
+                  text-decoration: none;
+                  color: var(--ink, #111);
+                  transition:
+                    transform 0.1s ease,
+                    box-shadow 0.1s ease;
+                "
+                style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink,#111);"
+                ><span
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 900;
+                    font-size: 18px;
+                  "
+                  ><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" style="flex-shrink: 0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>واتساپ</span
+                ><span
+                  dir="ltr"
+                  onclick="event.preventDefault();event.stopPropagation();copyContact(this,'+98 933 398 4150')"
+                  title="کپی کن"
+                  style="
+                    font-family: &quot;Space Mono&quot;, monospace;
+                    font-size: 13px;
+                    color: var(--muted, #5a5a5a);
+                    text-align: right;
+                    cursor: pointer;
+                  "
+                  >+98 933 398 4150</span
+                ></a
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer
+          style="
+            border-top: 4px solid var(--ink, #111);
+            background: var(--ink, #111);
+            color: var(--paper, #fff);
+          "
+        >
+          <div
+            style="
+              max-width: 1180px;
+              margin: 0 auto;
+              padding: 24px 22px;
+              display: flex;
+              flex-wrap: wrap;
+              gap: 12px;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
+            <span
+              style="font-family: &quot;Lalezar&quot;, cursive; font-size: 24px"
+              >Randir</span
+            >
+            <span
+              dir="ltr"
+              style="
+                font-family: &quot;Space Mono&quot;, monospace;
+                font-size: 13px;
+                color: #bbb;
+              "
+              >built with clean code — © 2026 mohamad solat</span
+            >
+          </div>
+        </footer>
+      </div>
+      <template id="__bundler_thumbnail" data-bg-color="#ffd02e">
+        <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+          <rect width="1200" height="800" fill="#ffd02e"></rect>
+          <rect
+            x="360"
+            y="250"
+            width="480"
+            height="300"
+            fill="#fff"
+            stroke="var(--ink,#111)"
+            stroke-width="22"
+          ></rect>
+          <rect
+            x="392"
+            y="282"
+            width="480"
+            height="300"
+            fill="none"
+            stroke="var(--ink,#111)"
+            stroke-width="22"
+          ></rect>
+          <text
+            x="600"
+            y="470"
+            text-anchor="middle"
+            font-family="monospace"
+            font-size="150"
+            font-weight="700"
+            fill="var(--ink,#111)"
+          >
+            R
+          </text>
+        </svg>
+      </template>
+    </x-dc>
+    <script
+      data-cfasync="false"
+      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+    ></script>
+    <script
+      type="text/x-dc"
+      data-dc-script
+      data-props='{
+  "accent": { "editor": "color", "default": "#ffd02e", "options": ["#ffd02e", "#ff7bac", "#5b8cff", "#c2f24a", "#ff7a3c"], "tsType": "string" },
+  "surface": { "editor": "enum", "default": "cream", "options": ["cream", "mint", "sky", "pink"], "tsType": "string" },
+  "shadow": { "editor": "enum", "default": "medium", "options": ["tight", "medium", "bold"], "tsType": "string" }
+}'
+    >
+      class Component extends DCLogic {
+        state = { dark: false, accentIdx: null };
+        componentDidUpdate() { this.applyTheme(); }
+        setRoot = (el) => { this._root = el; if (el) this.applyTheme(); };
+        applyTheme() {
+          const el = this._root; if (!el) return;
+          const palette = ['#ffd02e', '#ff7bac', '#5b8cff', '#c2f24a', '#ff7a3c'];
+          const accent = this.state.accentIdx != null ? palette[this.state.accentIdx % palette.length] : (this.props.accent || '#ffd02e');
+          el.style.setProperty('--accent', accent);
+          const sh = { tight: '4px', medium: '7px', bold: '11px' };
+          el.style.setProperty('--shadow', sh[this.props.shadow] || '7px');
+          if (this.state.dark) {
+            el.style.setProperty('--ink', '#f3ead8');
+            el.style.setProperty('--card', '#202020');
+            el.style.setProperty('--paper', '#161616');
+            el.style.setProperty('--muted', '#b9b3a4');
+          } else {
+            el.style.setProperty('--ink', '#111');
+            el.style.setProperty('--card', '#fff');
+            el.style.setProperty('--muted', '#5a5a5a');
+            const paper = { cream: '#f5efe0', mint: '#d8f3e3', sky: '#dbe9ff', pink: '#ffe1ec' };
+            el.style.setProperty('--paper', paper[this.props.surface] || '#f5efe0');
+          }
+        }
+        renderVals() {
+          return {
+            setRoot: this.setRoot,
+            darkIcon: this.state.dark ? '☀' : '☾',
+            toggleDark: () => this.setState(s => ({ dark: !s.dark })),
+            cycleAccent: () => this.setState(s => ({ accentIdx: (s.accentIdx == null ? 1 : s.accentIdx + 1) })),
+          };
+        }
+      }
+    </script>
+    <script>
+      window.copyContact = function (el, text) {
+        var orig = el.innerHTML;
+        function show() {
+          el.innerHTML = '✓ کپی شد';
+          el.style.color = 'var(--ink,#111)';
+          setTimeout(function () { el.innerHTML = orig; el.style.color = ''; }, 1600);
+        }
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(show);
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta); show();
+        }
+      };
+    </script>
+    <script>
+      (function () {
+        if (window.__backToTopInit) return;
+        window.__backToTopInit = true;
+
+        function start() {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.setAttribute('aria-label', 'بازگشت به بالا');
+          btn.textContent = '↑';
+          btn.style.cssText =
+            'position:fixed;bottom:24px;left:24px;z-index:9999;width:54px;height:54px;' +
+            'border:3px solid var(--ink,#111);background:var(--accent,#52cc5d);' +
+            'box-shadow:var(--shadow,7px) var(--shadow,7px) 0 var(--ink,#111);cursor:pointer;' +
+            'display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;' +
+            'color:var(--ink,#111);transition:opacity .2s ease, transform .12s ease;' +
+            'opacity:0;transform:translateY(14px);pointer-events:none;';
+          document.body.appendChild(btn);
+
+          btn.addEventListener('mouseenter', function () { if (btn.style.pointerEvents === 'auto') btn.style.transform = 'translate(2px,2px)'; });
+          btn.addEventListener('mouseleave', function () { if (btn.style.pointerEvents === 'auto') btn.style.transform = 'translateY(0)'; });
+
+          // Remember which element actually scrolled, so the click scrolls the right one.
+          var lastScroller = window;
+
+          function posOf(el) {
+            if (!el || el === window || el === document || el === document.documentElement || el === document.body) {
+              return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+            }
+            return el.scrollTop || 0;
+          }
+
+          function update(y) {
+            var show = y >= 300;
+            btn.style.opacity = show ? '1' : '0';
+            btn.style.transform = show ? 'translateY(0)' : 'translateY(14px)';
+            btn.style.pointerEvents = show ? 'auto' : 'none';
+          }
+
+          function onScroll(e) {
+            var t = e && e.target ? e.target : window;
+            if (t === document) t = window;
+            lastScroller = t;
+            update(posOf(t));
+          }
+
+          // Capture phase catches scroll from the window AND any inner scroll container.
+          window.addEventListener('scroll', onScroll, { capture: true, passive: true });
+
+          btn.addEventListener('click', function () {
+            var el = lastScroller;
+            if (!el || el === window || el === document || el === document.documentElement || el === document.body) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              if (document.scrollingElement && document.scrollingElement.scrollTo) {
+                document.scrollingElement.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            } else if (el.scrollTo) {
+              el.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              el.scrollTop = 0;
+            }
+          });
+
+          update(posOf(window));
+        }
+
+        if (document.body) start();
+        else document.addEventListener('DOMContentLoaded', start);
+      })();
+    </script>
+  </body>
+</html>
