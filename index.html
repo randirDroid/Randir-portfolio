@@ -102,6 +102,21 @@
           }
           .mobile-nav a.contact-link:hover { opacity: 0.85; }
 
+          /* ── Contact handle glassy hover ── */
+          .contact-handle {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 2px 6px;
+            margin: -2px -6px;
+            border-radius: 3px;
+            transition: background 0.18s ease;
+          }
+          .contact-card:hover .contact-handle {
+            background: rgba(140, 140, 140, 0.28);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+          }
+
           /* ── 880px: tablet / large phone ── */
           @media (max-width: 880px) {
             .grid2    { grid-template-columns: 1fr !important; }
@@ -1472,6 +1487,7 @@
             >
               <a
                 href="https://t.me/Mohamadsolat"
+                class="contact-card"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -1500,6 +1516,7 @@
                   dir="ltr"
                   onclick="event.preventDefault();event.stopPropagation();copyContact(this,'@Mohamadsolat')"
                   title="کپی کن"
+                  class="contact-handle"
                   style="
                     font-family: &quot;Space Mono&quot;, monospace;
                     font-size: 13px;
@@ -1512,6 +1529,7 @@
               >
               <a
                 href="https://github.com/randirDroid"
+                class="contact-card"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -1540,6 +1558,7 @@
                   dir="ltr"
                   onclick="event.preventDefault();event.stopPropagation();copyContact(this,'github.com/RandirDroid')"
                   title="کپی کن"
+                  class="contact-handle"
                   style="
                     font-family: &quot;Space Mono&quot;, monospace;
                     font-size: 13px;
@@ -1552,6 +1571,7 @@
               >
               <a
                 href="mailto:mohamadhajisolat@gmail.com"
+                class="contact-card"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -1578,8 +1598,9 @@
                   ><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" style="flex-shrink: 0"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>ایمیل</span
                 ><span
                   dir="ltr"
-                  onclick="event.preventDefault();event.stopPropagation();copyContact(this,'mohamadsolatrndr@gmail.com')"
+                  onclick="event.preventDefault();event.stopPropagation();copyContact(this,'mohamadhajisolat@gmail.com')"
                   title="کپی کن"
+                  class="contact-handle"
                   style="
                     font-family: &quot;Space Mono&quot;, monospace;
                     font-size: 13px;
@@ -1625,6 +1646,7 @@
               > -->
               <a
                 href="https://wa.me/989333984150"
+                class="contact-card"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -1653,6 +1675,7 @@
                   dir="ltr"
                   onclick="event.preventDefault();event.stopPropagation();copyContact(this,'+98 933 398 4150')"
                   title="کپی کن"
+                  class="contact-handle"
                   style="
                     font-family: &quot;Space Mono&quot;, monospace;
                     font-size: 13px;
