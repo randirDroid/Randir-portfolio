@@ -20,104 +20,111 @@
           rel="stylesheet"
         />
         <style>
-          * {
-            box-sizing: border-box;
-          }
-          html,
-          body {
+          * { box-sizing: border-box; }
+
+          html, body {
             margin: 0;
             scroll-behavior: smooth;
+            overflow-x: hidden;
           }
+
           ::selection {
             background: var(--ink, #111);
             color: var(--paper, #fff);
           }
+
           @keyframes marq {
-            from {
-              transform: translateX(0);
-            }
-            to {
-              transform: translateX(-50%);
-            }
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
           }
+
           @keyframes statusPulse {
-            0% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--available-status-color, #16c46a) 60%, transparent);
-            }
-            70% {
-              box-shadow: 0 0 0 9px
-                color-mix(in srgb, var(--available-status-color, #16c46a) 0%, transparent);
-            }
-            100% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--available-status-color, #16c46a) 0%, transparent);
-            }
-          };
-          @keyframes statusPulse {
-            0% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--busy-status-color, #ffb020) 60%, transparent);
-            }
-            70% {
-              box-shadow: 0 0 0 9px
-                color-mix(in srgb, var(--busy-status-color, #ffb020) 0%, transparent);
-            }
-            100% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--busy-status-color, #ffb020) 0%, transparent);
-            }
-          };
-          @keyframes statusPulse {
-            0% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--do-not-disturb-status-color, #e5484d) 60%, transparent);
-            }
-            70% {
-              box-shadow: 0 0 0 9px
-                color-mix(in srgb, var(--do-not-disturb-status-color, #e5484d) 0%, transparent);
-            }
-            100% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--do-not-disturb-status-color, #e5484d) 0%, transparent);
-            }
-          };
-          @keyframes statusPulse {
-            0% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--offline-status-color, #8b8b8b) 60%, transparent);
-            }
-            70% {
-              box-shadow: 0 0 0 9px
-                color-mix(in srgb, var(--offline-status-color, #8b8b8b) 0%, transparent);
-            }
-            100% {
-              box-shadow: 0 0 0 0
-                color-mix(in srgb, var(--offline-status-color, #8b8b8b) 0%, transparent);
-            }
-          };
-          
+            0%   { box-shadow: 0 0 0 0   color-mix(in srgb, var(--available-status-color, #16c46a) 60%, transparent); }
+            70%  { box-shadow: 0 0 0 9px color-mix(in srgb, var(--available-status-color, #16c46a)  0%, transparent); }
+            100% { box-shadow: 0 0 0 0   color-mix(in srgb, var(--available-status-color, #16c46a)  0%, transparent); }
+          }
+
+          /* ── Hamburger button (hidden on desktop) ── */
+          .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            width: 44px;
+            height: 44px;
+            border: 3px solid var(--ink, #111);
+            background: var(--card, #fff);
+            box-shadow: 4px 4px 0 var(--ink, #111);
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+          }
+          .hamburger:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--ink, #111);
+          }
+          .hamburger span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--ink, #111);
+            transition: transform 0.22s ease, opacity 0.22s ease;
+          }
+          .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+          .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+          .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+          /* ── Mobile nav panel (hidden by default) ── */
+          .mobile-nav {
+            display: none;
+            flex-direction: column;
+            background: var(--paper, #f5efe0);
+            border-top: 3px solid var(--ink, #111);
+          }
+          .mobile-nav.open { display: flex; }
+          .mobile-nav a {
+            padding: 18px 22px;
+            border-bottom: 2px solid rgba(0,0,0,0.08);
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--ink, #111);
+            text-decoration: none;
+            transition: background 0.12s ease;
+          }
+          .mobile-nav a:last-child { border-bottom: none; }
+          .mobile-nav a:hover { background: var(--accent, #52cc5d); }
+          .mobile-nav a.contact-link {
+            background: var(--ink, #111);
+            color: #fff;
+            border-bottom: none;
+          }
+          .mobile-nav a.contact-link:hover { opacity: 0.85; }
+
+          /* ── 880px: tablet / large phone ── */
           @media (max-width: 880px) {
-            .grid2 {
-              grid-template-columns: 1fr !important;
+            .grid2    { grid-template-columns: 1fr !important; }
+            .grid2b   { grid-template-columns: 1fr !important; }
+            .grid4    { grid-template-columns: 1fr 1fr !important; }
+            .navlinks { display: none !important; }
+            .hero-photo { order: -1; }
+            .hero-badge { display: none; }
+            .hamburger  { display: flex; }
+            .hero-name-row { flex-wrap: wrap; gap: 12px; }
+            .proj-img {
+              border-left: none !important;
+              border-bottom: 4px solid var(--ink, #111) !important;
+              min-height: unset !important;
+              height: 260px;
             }
-            .grid2b {
-              grid-template-columns: 1fr !important;
-            }
-            .grid4 {
-              grid-template-columns: 1fr 1fr !important;
-            }
-            .navlinks {
-              display: none !important;
-            }
-            .hero-photo {
-              order: -1;
-            }
+            .proj-img a { display: block; width: 100%; height: 100%; }
           }
+
+          /* ── 560px: small phone ── */
           @media (max-width: 560px) {
-            .grid4 {
-              grid-template-columns: 1fr !important;
-            }
+            .grid4 { grid-template-columns: 1fr !important; }
+            .hero-name-row h1 { font-size: clamp(40px, 12vw, 70px) !important; }
           }
         </style>
       </helmet>
@@ -273,9 +280,44 @@
                   >ارتباط</a
                 >
               </nav>
+              <button
+                id="hamburger-btn"
+                class="hamburger"
+                aria-label="منو"
+                aria-expanded="false"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
             </div>
           </div>
+          <nav class="mobile-nav" id="mobile-nav">
+            <a href="#about">درباره من</a>
+            <a href="#skills">توانایی‌ها</a>
+            <a href="#projects">پروژه‌ها</a>
+            <a href="#contact" class="contact-link">ارتباط</a>
+          </nav>
         </header>
+        <script>
+          (function () {
+            var btn = document.getElementById('hamburger-btn');
+            var nav = document.getElementById('mobile-nav');
+            if (!btn || !nav) return;
+            btn.addEventListener('click', function () {
+              var open = nav.classList.toggle('open');
+              btn.classList.toggle('open', open);
+              btn.setAttribute('aria-expanded', String(open));
+            });
+            nav.querySelectorAll('a').forEach(function (a) {
+              a.addEventListener('click', function () {
+                nav.classList.remove('open');
+                btn.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+              });
+            });
+          })();
+        </script>
 
         <!-- HERO -->
         <section
@@ -306,6 +348,7 @@
                 >توسعه دهنده فرانت اند</span
               >
               <div
+                class="hero-name-row"
                 style="
                   display: flex;
                   align-items: center;
@@ -565,6 +608,7 @@
                 </div>
               </div>
               <span
+                class="hero-badge"
                 style="
                   position: absolute;
                   top: -30px;
@@ -599,6 +643,7 @@
                     </span>غیر قابل دسترس</span>
                     </span>آفلاین</span> -->
               <span
+                class="hero-badge"
                 style="
                   position: absolute;
                   bottom: -18px;
@@ -1151,6 +1196,7 @@
             "
           >
             <div
+              class="proj-img"
               style="
                 min-height: 300px;
                 border-left: 4px solid var(--ink, #111);
@@ -1738,6 +1784,18 @@
           };
         }
       }
+    </script>
+    <script>
+      window.toggleMobileNav = function (btn) {
+        var open = btn.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+        document.getElementById('mobile-nav').classList.toggle('open');
+      };
+      window.closeMobileNav = function () {
+        var btn = document.querySelector('.hamburger');
+        if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+        document.getElementById('mobile-nav').classList.remove('open');
+      };
     </script>
     <script>
       window.copyContact = function (el, text) {
